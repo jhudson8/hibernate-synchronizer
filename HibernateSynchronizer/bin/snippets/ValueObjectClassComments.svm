@@ -1,0 +1,5 @@
+#if ($class.get("class-description", true))
+/**
+$!class.getJavaDoc("class-description")
+ */
+#end

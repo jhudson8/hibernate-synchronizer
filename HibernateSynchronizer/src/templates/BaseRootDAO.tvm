@@ -1,0 +1,20 @@
+:Description=
+:ResourceType=C
+-
+package ${package};
+
+${snippet.BaseRootDAOImports}
+
+${snippet.BaseRootDAOClassComments}
+${snippet.BaseRootDAOClassDefinition}
+
+${snippet.BaseRootDAOSessionMethods}
+	
+${snippet.BaseRootDAORequiredMethods}
+
+${snippet.BaseRootDAOFinderMethods}
+
+${snippet.BaseRootDAOActionMethods}
+
+${snippet.BaseRootDAOCustomContents}
+}

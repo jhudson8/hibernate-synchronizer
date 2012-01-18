@@ -1,0 +1,7 @@
+package ${class.DAOPackageName};
+
+import ${class.BaseDAOPackageName}.${class.BaseDAOClassName};
+
+$snippet.DAOComments
+public class ${class.DAOClassName} extends ${class.BaseDAOClassName} {
+}

@@ -1,0 +1,8 @@
+:Description=The import statements for the base DAO
+-
+#if ($class.ParentRoot.Id)
+import net.sf.hibernate.Hibernate;
+#end
+import net.sf.hibernate.Session;
+import ${class.DAOPackage}.${class.DAOClassName};
+import net.sf.hibernate.expression.Order;

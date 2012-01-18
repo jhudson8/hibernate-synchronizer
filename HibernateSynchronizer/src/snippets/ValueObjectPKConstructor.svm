@@ -1,0 +1,18 @@
+	public ${class.Id.Property.ClassName} () {}
+	
+	public ${class.Id.Property.ClassName} (
+#set ($countT = 1)
+#foreach ($prop in $class.Id.Properties)
+		${prop.AbsoluteSignatureClassName} ${prop.VarName}#if ($countT < $class.Id.Properties.size()),
+#end
+#set ($countT = $countT + 1)
+#end) {
+
+		super (
+#set ($countT = 1)
+#foreach ($prop in $class.Id.Properties)
+			${prop.VarName}#if ($countT < $class.Id.Properties.size()),
+#end
+#set ($countT = $countT + 1)
+#end);
+	}

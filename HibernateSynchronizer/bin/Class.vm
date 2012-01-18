@@ -1,0 +1,11 @@
+package ${class.PackageName};
+
+import ${class.BasePackageName}.${class.BaseClassName};
+
+$snippet.ClassComments
+public class ${class.ClassName} extends ${class.BaseClassName} {
+
+/*[CONSTRUCTOR MARKER BEGIN]*/
+$!{constructors}
+/*[CONSTRUCTOR MARKER END]*/
+}

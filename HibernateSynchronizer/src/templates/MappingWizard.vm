@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+
+<hibernate-mapping package="$!{packageName}">
+#if ($table.ParentTableRelationship)
+	<joined-subclass
+		name="$!{table.HibernateClassName}"
+		table="$!{table.Name}"
+#if ($UseProxies)
+		proxy="$!{proxyClass}"
+#end
+		extends="$table.ParentTableRelationship.ParentTable.HibernateClassName"
+	>
+#foreach ($column in $table.PkColumns)
+		<key column="${column.Name}"/>
+#end
+
+#else	
+	<class
+		name="$!{table.HibernateClassName}"
+		table="$!{table.Name}"
+#if ($UseProxies)
+		proxy="$!{proxyClass}"
+#end
+	>
+#if ($table.MetaData)
+$table.MetaData
+#end
+#if ($table.hasCompositeKey())
+#if ($table.isCompositeKeyOnly())
+		<composite-id>
+#else
+		<composite-id name="$!{CompositeIdName}" class="$!{table.ClassName}PK">
+#end
+#foreach ($column in $table.PkColumns)
+#if ($column.isForeignKey())
+			<key-many-to-one
+				name="$!{column.PropName}"
+				class="${column.ParentTable.HibernateClassName}"
+				column="$!{column.Name}"
+			/>
+#else
+#if (!$column.isTypeResolved())
+		<!-- please tell Joe Hudson that the type '$!{column.DataType}' could not be resolved.. defaulting to java.lang.String -->
+#end
+			<key-property
+				name="$!{column.PropName}"
+				column="$!{column.Name}"
+				type="$!{column.HibernateType}"
+			/>
+#end
+#end
+		</composite-id>
+#else
+#if ($table.PkColumns.size() == 1)
+#foreach ($column in $table.PkColumns)
+#if (!$column.isTypeResolved())
+		<!-- please tell Joe Hudson that the type '$!{column.DataType}' could not be resolved.. defaulting to java.lang.String -->
+#end
+		<id
+			name="$!{column.PropName}"
+			type="$!{column.HibernateType}"
+			column="$!{column.Name}"
+		>
+#if ($column.MetaData)
+$column.MetaData
+#end
+			<generator class="$!{Generator}"/>
+		</id>
+#end
+#end
+#end
+
+#end
+#foreach($column in $table.Columns)
+#if (!$column.isPrimaryKey() && !$table.isForeignKey($column))
+#if (!$column.isTypeResolved())
+		<!-- please tell Joe Hudson that the type '$!{column.DataType}' could not be resolved.. defaulting to java.lang.String -->
+#end
+		<property
+			name="$!{column.PropName}"
+			column="$!{column.Name}"
+			type="$!{column.HibernateType}"
+#if (!$column.isNull())
+			not-null="true"
+#else
+			not-null="false"
+#end
+#if ($column.Size > 0)
+			length="${column.Size}"
+#end
+#if ($column.MetaData)
+		>
+$column.MetaData
+		</property>
+#else
+		/>
+#end
+#end
+#end
+#foreach($column in $table.FKColumns)
+#if (!$column.isPrimaryKey())
+		<many-to-one
+			name="$!{column.PropName}"
+			column="$!{column.Name}"
+			class="$!{column.ParentTable.HibernateClassName}"
+#if (!$column.isNull())
+			not-null="true"
+#else
+			not-null="false"
+#end
+		>
+#if ($column.MetaData)
+$column.MetaData
+#end
+		</many-to-one>
+#end
+#end
+#if (!$fileExists)
+#if ($CreateSets)
+#if ($table.OneToManyRelationships.size() > 0)
+	
+#foreach($rel in $table.OneToManyRelationships)
+
+		<set name="$!{rel.ListName}" inverse="true"#if ($UseLazyLoading) lazy="true"#end>
+#foreach ($join in $rel.Joins)
+			<key column="$!{join.PrimaryKey.Name}"/>
+#end
+			<one-to-many class="${rel.ChildTable.HibernateClassName}"/>
+		</set>
+#end
+#end
+#if ($table.ManyToManyRelationships.size() > 0)
+	
+#foreach($rel in $table.ManyToManyRelationships)
+		<set
+			name="$!{rel.ListName}"
+			table="$!{rel.ChildTable.Name}"
+			cascade="all"
+#if ($UseLazyLoading)
+			lazy="true"
+#end
+		>
+			<key column="$!{rel.ManyToManyChildColumn.Name}"/>
+			<many-to-many column="$!{rel.ManyToManyAltChildColumn.Name}" class="$!{rel.ManyToManyTable.HibernateClassName}"/>
+		</set>
+#end
+#end
+#end
+#else
+#if ($oneToOnes)
+${oneToOnes}
+#end
+#if ($manyToManies)
+${manyToManies}
+#end
+#if ($components)
+${components}
+#end
+#if ($dynamicComponents)
+${dynamicComponents}
+#end
+#if ($maps)
+${maps}
+#end
+#if ($lists)
+${lists}
+#end
+#if ($sets)
+${sets}
+#end
+#if ($bags)
+${bags}
+#end
+#if ($arrays)
+${arrays}
+#end
+#if ($primitiveArrays)
+${primitiveArrays}
+#end
+#if ($subclasses)
+${subclasses}
+#end
+#end
+
+
+#if ($table.ParentTableRelationship)
+	</joined-subclass>
+#else
+	</class>	
+#end
+#if ($fileExists)
+#if ($queries)
+${queries}
+#end
+#end
+</hibernate-mapping>

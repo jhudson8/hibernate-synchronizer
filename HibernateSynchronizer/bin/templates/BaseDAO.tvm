@@ -1,0 +1,22 @@
+:Description=
+:ResourceType=C
+-
+package ${package};
+
+${snippet.BaseDAOImports}
+
+${snippet.BaseDAOClassComments}
+${snippet.BaseDAOClassDefinition}
+
+${snippet.BaseDAOQueryNames}
+
+${snippet.BaseDAOInstanceMethod}
+
+${snippet.BaseDAORequiredMethods}
+
+${snippet.BaseDAOFinderMethods}
+
+${snippet.BaseDAOActionMethods}
+
+${snippet.BaseDAOCustomContents}
+}

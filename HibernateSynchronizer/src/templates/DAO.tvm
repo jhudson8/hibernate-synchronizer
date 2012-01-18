@@ -1,0 +1,12 @@
+:Description=
+:ResourceType=C
+-
+package ${package};
+
+${snippet.DAOImports}
+
+${snippet.DAOClassComments}
+${snippet.DAOClassDefinition}
+
+$!{snippet.DAOCustomContents}
+}

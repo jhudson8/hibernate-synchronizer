@@ -1,0 +1,27 @@
+package ${class.BasePackageName};
+
+$snippet.BaseClassPKImport
+
+$snippet.BaseClassPKComments
+$snippet.ClassPKDeclaration
+
+	private int hashCode = Integer.MIN_VALUE;
+
+#foreach ($prop in $class.Id.Properties)
+	private ${prop.SignatureFullClassName} ${prop.JavaName};
+#end
+
+$snippet.ConstructorPK
+
+#foreach ($prop in $class.Id.Properties)
+
+$snippet.IdGetter
+
+$snippet.IdSetter
+#end
+
+$snippet.EqualsPK
+
+$snippet.HashCodePK
+$!{snippet.BaseClassPKCustomContents}
+}

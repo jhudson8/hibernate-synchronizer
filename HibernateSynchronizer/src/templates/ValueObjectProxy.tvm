@@ -1,0 +1,13 @@
+:Description=
+:ResourceType=C
+-
+package $!{class.ProxyPackageName};
+
+$snippet.ProxyImport
+
+$snippet.ProxyComments
+public interface $!{class.ProxyClassName} extends Serializable {
+/*[GENERATED CONTENT MARKER BEGIN]*/
+$contents
+/*[GENERATED CONTENT MARKER END]*/
+}

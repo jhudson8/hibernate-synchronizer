@@ -1,0 +1,30 @@
+:Description=
+:ResourceType=C
+-
+package ${package};
+
+${snippet.BaseValueObjectImports}
+
+${snippet.BaseValueObjectClassComments}
+${snippet.BaseValueObjectClassDefinition}
+
+${snippet.BaseValueObjectStaticProperties}
+
+${snippet.BaseValueObjectConstructor}
+
+${snippet.BaseValueObjectVariableDefinitions}
+
+${snippet.BaseValueObjectIdGetterSetter}
+
+${snippet.BaseValueObjectGetterSetter}
+
+${snippet.BaseValueObjectEqualityMethods}
+
+${snippet.BaseValueObjectToString}
+
+${snippet.BaseValueObjectCustomContents}
+#if ($class.get("class-code", true))
+
+$class.get("class-code", true)
+#end
+}

@@ -1,0 +1,74 @@
+#if ($class.ParentRoot.Id)
+	public ${class.AbsoluteValueObjectSignatureClassName} get(${class.ParentRoot.Id.Property.AbsoluteSignatureClassName} key)
+#if ($exceptionClass)
+		throws ${exceptionClass} {
+#else
+	{
+#end
+#if ($class.ParentRoot.Id.Property.isPrimitive())
+		return (${class.AbsoluteValueObjectSignatureClassName}) get(getReferenceClass(), new ${class.ParentRoot.Id.Property.ObjectClass}(key));
+#else
+		return (${class.AbsoluteValueObjectSignatureClassName}) get(getReferenceClass(), key);
+#end
+	}
+
+	public ${class.AbsoluteValueObjectSignatureClassName} get(${class.ParentRoot.Id.Property.AbsoluteSignatureClassName} key, Session s)
+#if ($exceptionClass)
+		throws ${exceptionClass} {
+#else
+	{
+#end
+#if ($class.ParentRoot.Id.Property.isPrimitive())
+		return (${class.AbsoluteValueObjectSignatureClassName}) get(getReferenceClass(), new ${class.ParentRoot.Id.Property.ObjectClass}(key), s);
+#else
+		return (${class.AbsoluteValueObjectSignatureClassName}) get(getReferenceClass(), key, s);
+#end
+	}
+
+	public ${class.AbsoluteValueObjectSignatureClassName} load(${class.ParentRoot.Id.Property.AbsoluteSignatureClassName} key)
+#if ($exceptionClass)
+		throws ${exceptionClass} {
+#else
+	{
+#end
+#if ($class.ParentRoot.Id.Property.isPrimitive())
+		return (${class.AbsoluteValueObjectSignatureClassName}) load(getReferenceClass(), new ${class.ParentRoot.Id.Property.ObjectClass}(key));
+#else
+		return (${class.AbsoluteValueObjectSignatureClassName}) load(getReferenceClass(), key);
+#end
+	}
+
+	public ${class.AbsoluteValueObjectSignatureClassName} load(${class.ParentRoot.Id.Property.AbsoluteSignatureClassName} key, Session s)
+#if ($exceptionClass)
+		throws ${exceptionClass} {
+#else
+	{
+#end
+#if ($class.ParentRoot.Id.Property.isPrimitive())
+		return (${class.AbsoluteValueObjectSignatureClassName}) load(getReferenceClass(), new ${class.ParentRoot.Id.Property.ObjectClass}(key), s);
+#else
+		return (${class.AbsoluteValueObjectSignatureClassName}) load(getReferenceClass(), key, s);
+#end
+	}
+
+	public ${class.AbsoluteValueObjectSignatureClassName} loadInitialize(${class.ParentRoot.Id.Property.AbsoluteSignatureClassName} key, Session s) 
+#if ($exceptionClass) 
+			throws ${exceptionClass} { 
+#else 
+	{ 
+#end 
+		${class.AbsoluteValueObjectSignatureClassName} obj = load(key, s); 
+		if (!Hibernate.isInitialized(obj)) {
+			Hibernate.initialize(obj);
+		} 
+		return obj; 
+	}
+#end
+#foreach ($prop in $class.AllProperties)
+#if ($prop.FinderMethod)
+
+	public java.util.List $prop.FinderMethod (${prop.AbsoluteSignatureClassName} ${prop.VarName}) throws net.sf.hibernate.HibernateException {
+		return findFiltered ("$!{prop.Name}", ${prop.VarName});
+	}
+#end
+#end

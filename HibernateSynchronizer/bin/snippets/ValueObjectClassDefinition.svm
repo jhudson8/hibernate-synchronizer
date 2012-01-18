@@ -1,0 +1,2 @@
+$!{class.ValueObjectScope} class $!{class.ValueObjectClassName} extends $!{class.BaseValueObjectClassName} {
+	private static final long serialVersionUID = 1L;

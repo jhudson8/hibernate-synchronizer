@@ -1,0 +1,1 @@
+public abstract class $!{class.BaseValueObjectClassName} #if ($class.isSubclass())extends ${class.Parent.AbsoluteValueObjectClassName} #elseif ($class.Extends)extends $class.Extends #end implements#if ($class.hasProxy()) $class.ProxyClassName,#end Serializable#if ($class.Implements), $class.Implements#end {

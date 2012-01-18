@@ -1,0 +1,389 @@
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Get object matching the given key and return it.
+	 */
+	protected Object get(Class refClass, Serializable key) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return get(refClass, key, s);
+		} finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Get object matching the given key and return it.
+	 */
+	protected Object get(Class refClass, Serializable key, Session s) throws HibernateException {
+		return s.get(refClass, key);
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Load object matching the given key and return it.
+	 */
+	protected Object load(Class refClass, Serializable key) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return load(refClass, key, s);
+		} finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Load object matching the given key and return it.
+	 */
+	protected Object load(Class refClass, Serializable key, Session s) throws HibernateException {
+		return s.load(refClass, key);
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with no filter.
+	 */
+	public java.util.List findAll () throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+    		return findAll(s);
+		}
+		finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with no filter.
+	 * Use the session given.
+	 * @param s the Session
+	 */
+	public java.util.List findAll (Session s) throws HibernateException {
+   		return findAll(s, getDefaultOrder());
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with no filter.
+	 */
+	public java.util.List findAll (Order defaultOrder) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return findAll(s, defaultOrder);
+		}
+		finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with no filter.
+	 * Use the session given.
+	 * @param s the Session
+	 */
+	public java.util.List findAll (Session s, Order defaultOrder) throws HibernateException {
+		Criteria crit = s.createCriteria(getReferenceClass());
+		if (null != defaultOrder) crit.addOrder(defaultOrder);
+		return crit.list();
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with a filter.
+	 * Use the session given.
+	 * @param propName the name of the property to use for filtering
+	 * @param filter the value of the filter
+	 */
+	protected java.util.List findFiltered (String propName, Object filter) throws HibernateException {
+		return findFiltered(propName, filter, getDefaultOrder());
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with a filter.
+	 * Use the session given.
+	 * @param propName the name of the property to use for filtering
+	 * @param filter the value of the filter
+	 * @param orderProperty the name of the property used for ordering
+	 */
+	protected java.util.List findFiltered (String propName, Object filter, Order order) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return findFiltered(s, propName, filter, order);
+		}
+		finally {
+			closeSession(s);
+		}
+	}
+	
+	/**
+	 * Return all objects related to the implementation of this DAO with a filter.
+	 * Use the session given.
+	 * @param s the Session
+	 * @param propName the name of the property to use for filtering
+	 * @param filter the value of the filter
+	 * @param orderProperty the name of the property used for ordering
+	 */
+	protected java.util.List findFiltered (Session s, String propName, Object filter, Order order) throws HibernateException {
+		Criteria crit = s.createCriteria(getReferenceClass());
+		crit.add(Expression.eq(propName, filter));
+		if (null != order) crit.addOrder(order);
+		return crit.list();
+	}
+	
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * @param name the name of a query defined externally 
+	 * @return Query
+	 */
+	protected Query getNamedQuery(String name) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return getNamedQuery(name, s);
+		} finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the session given.
+	 * @param name the name of a query defined externally 
+	 * @param s the Session
+	 * @return Query
+	 */
+	protected Query getNamedQuery(String name, Session s) throws HibernateException {
+		Query q = s.getNamedQuery(name);
+		return q;
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * @param name the name of a query defined externally 
+	 * @param param the first parameter to set
+	 * @return Query
+	 */
+	protected Query getNamedQuery(String name, Serializable param) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return getNamedQuery(name, param, s);
+		} finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the session given.
+	 * @param name the name of a query defined externally 
+	 * @param param the first parameter to set
+	 * @param s the Session
+	 * @return Query
+	 */
+	protected Query getNamedQuery(String name, Serializable param, Session s) throws HibernateException {
+		Query q = s.getNamedQuery(name);
+		q.setParameter(0, param);
+		return q;
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the parameters given.
+	 * @param name the name of a query defined externally 
+	 * @param params the parameter array
+	 * @return Query
+	 */
+	protected Query getNamedQuery(String name, Serializable[] params) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return getNamedQuery(name, params, s);
+		} finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the parameters given and the Session given.
+	 * @param name the name of a query defined externally 
+	 * @param params the parameter array
+	 * @s the Session
+	 * @return Query
+	 */
+	protected Query getNamedQuery(String name, Serializable[] params, Session s) throws HibernateException {
+		Query q = s.getNamedQuery(name);
+		if (null != params) {
+			for (int i = 0; i < params.length; i++) {
+				q.setParameter(i, params[i]);
+			}
+		}
+		return q;
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the parameters given.
+	 * @param name the name of a query defined externally 
+	 * @param params the parameter Map
+	 * @return Query
+	 */
+	protected Query getNamedQuery(String name, Map params) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return getNamedQuery(name, params, s);
+		} finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the parameters given and the Session given.
+	 * @param name the name of a query defined externally 
+	 * @param params the parameter Map
+	 * @s the Session
+	 * @return Query
+	 */
+	protected Query getNamedQuery(String name, Map params, Session s) throws HibernateException {
+		Query q = s.getNamedQuery(name);
+		if (null != params) {
+			for (Iterator i=params.entrySet().iterator(); i.hasNext(); ) {
+				Map.Entry entry = (Map.Entry) i.next();
+				q.setParameter((String) entry.getKey(), entry.getValue());
+			}
+		}
+		return q;
+	}
+
+	/**
+	 * Execute a query. 
+	 * @param queryStr a query expressed in Hibernate's query language
+	 * @return a distinct list of instances (or arrays of instances)
+	 */
+	public Query getQuery(String queryStr) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return getQuery(queryStr, s);
+		} finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Execute a query but use the session given instead of creating a new one.
+	 * @param queryStr a query expressed in Hibernate's query language
+	 * @s the Session to use
+	 */
+	public Query getQuery(String queryStr, Session s) throws HibernateException {
+		return s.createQuery(queryStr);
+	}
+
+	/**
+	 * Execute a query. 
+	 * @param query a query expressed in Hibernate's query language
+	 * @param queryStr the name of a query defined externally 
+	 * @param param the first parameter to set
+	 * @return Query
+	 */
+	protected Query getQuery(String queryStr, Serializable param) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return getQuery(queryStr, param, s);
+		} finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Execute a query but use the session given instead of creating a new one.
+	 * @param queryStr a query expressed in Hibernate's query language
+	 * @param param the first parameter to set
+	 * @s the Session to use
+	 * @return Query
+	 */
+	protected Query getQuery(String queryStr, Serializable param, Session s) throws HibernateException {
+		Query q = getQuery(queryStr, s);
+		q.setParameter(0, param);
+		return q;
+	}
+
+	/**
+	 * Execute a query. 
+	 * @param queryStr a query expressed in Hibernate's query language
+	 * @param params the parameter array
+	 * @return Query
+	 */
+	protected Query getQuery(String queryStr, Serializable[] params) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return getQuery(queryStr, params, s);
+		} finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Execute a query but use the session given instead of creating a new one.
+	 * @param queryStr a query expressed in Hibernate's query language
+	 * @param params the parameter array
+	 * @s the Session
+	 * @return Query
+	 */
+	protected Query getQuery(String queryStr, Serializable[] params, Session s) throws HibernateException {
+		Query q = getQuery(queryStr, s);
+		if (null != params) {
+			for (int i = 0; i < params.length; i++) {
+				q.setParameter(i, params[i]);
+			}
+		}
+		return q;
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the parameters given.
+	 * @param queryStr a query expressed in Hibernate's query language
+	 * @param params the parameter Map
+	 * @return Query
+	 */
+	protected Query getQuery(String queryStr, Map params) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return getQuery(queryStr, params, s);
+		} finally {
+			closeSession(s);
+		}
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the parameters given and the Session given.
+	 * @param queryStr a query expressed in Hibernate's query language
+	 * @param params the parameter Map
+	 * @s the Session
+	 * @return Query
+	 */
+	protected Query getQuery(String queryStr, Map params, Session s) throws HibernateException {
+		Query q = getQuery(queryStr, s);
+		if (null != params) {
+			for (Iterator i=params.entrySet().iterator(); i.hasNext(); ) {
+				Map.Entry entry = (Map.Entry) i.next();
+				q.setParameter((String) entry.getKey(), entry.getValue());
+			}
+		}
+		return q;
+	}
+
+	protected Order getDefaultOrder () {
+		return null;
+	}

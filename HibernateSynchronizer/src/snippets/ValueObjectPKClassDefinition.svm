@@ -1,0 +1,2 @@
+public class ${class.Id.Property.ClassName} extends Base${class.Id.Property.ClassName} {
+	private static final long serialVersionUID = 1L;

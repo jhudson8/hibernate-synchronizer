@@ -1,0 +1,85 @@
+package $!{class.BasePackageName};
+
+$snippet.BaseClassImport
+
+$snippet.BaseClassComments
+$snippet.ClassDeclaration
+
+#foreach ($prop in $class.AllProperties)
+$snippet.StaticProperty
+#end
+
+$snippet.VariableDeclarations
+
+$snippet.Constructor
+
+$snippet.IdProps
+#if ($class.ComponentParent)
+	
+	public ${class.Parent.FullClassName} ${class.ComponentParent.GetterName} () {
+		return this.${class.ComponentParent.JavaName};
+	}
+
+	public void ${class.ComponentParent.SetterName} (${class.Parent.FullClassName} ${class.ComponentParent.JavaName}) {
+		this.${class.ComponentParent.JavaName} = ${class.ComponentParent.JavaName};
+	}
+#end
+#if ($class.Version)
+#set ($prop = $class.Version)
+
+$snippet.Getter
+
+$snippet.Setter
+$snippet.CustomProps
+#end
+#if ($class.Timestamp)
+#set ($prop = $class.Timestamp)
+
+$snippet.Getter
+
+$snippet.Setter
+$snippet.CustomProps
+#end
+#foreach ($prop in $class.Properties)
+
+$snippet.Getter
+
+$snippet.Setter
+$snippet.CustomProps
+#end
+#foreach ($prop in $class.ComponentList)
+
+$snippet.ComponentGetter
+
+$snippet.ComponentSetter
+$snippet.CustomProps
+#end
+#foreach ($prop in $class.OneToOneList)
+
+$snippet.OneToOneGetter
+
+$snippet.OneToOneSetter
+$snippet.CustomProps
+#end
+#foreach ($prop in $class.ManyToOneList)
+
+$snippet.ManyToOneGetter
+
+$snippet.ManyToOneSetter
+$snippet.CustomProps
+#end
+#foreach ($prop in $class.CollectionList)
+
+$snippet.CollectionGetter
+
+$snippet.CollectionSetter
+$snippet.CustomProps
+#end
+
+$!{snippet.Equals}
+
+$!{snippet.HashCode}
+
+$!{snippet.ToString}
+$!{snippet.BaseClassCustomContents}
+}

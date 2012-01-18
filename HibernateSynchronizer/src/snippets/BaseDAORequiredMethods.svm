@@ -1,0 +1,39 @@
+	public Class getReferenceClass () {
+		return ${class.AbsoluteValueObjectClassName}.class;
+	}
+#if ($class.ConfigFile)
+
+	/**
+	 * Return the name of the configuration file to be used with this DAO
+	 */
+	public String getConfigurationFileName () {
+		return "${class.ConfigFile}";
+	}
+#end
+
+    public Order getDefaultOrder () {
+#if ($class.getProperty("Name"))
+		return Order.asc("${class.getProperty("Name").Name}");
+#elseif ($class.getProperty("DisplayName"))
+		return Order.asc("${class.getProperty("DisplayName").Name}");
+#elseif ($class.getProperty("FirstName") && $class.getProperty("LastName"))
+		return Order.asc("${class.getProperty("LastName").Name}");
+#elseif ($class.getProperty("Title"))
+		return Order.asc("${class.getProperty("Title").Name}");
+#elseif ($class.getProperty("DisplayTitle"))
+		return Order.asc("${class.getProperty("DisplayTitle").Name}");
+#elseif ($class.getProperty("DisplayValue"))
+		return Order.asc("${class.getProperty("DisplayValue").Name}");
+#elseif ($class.getProperty("Display"))
+		return Order.asc("${class.getProperty("Display").Name}");
+#else
+		return null;
+#end
+    }
+
+	/**
+	 * Cast the object as a ${class.AbsoluteValueObjectSignatureClassName}
+	 */
+	public ${class.AbsoluteValueObjectSignatureClassName} cast (Object object) {
+		return (${class.AbsoluteValueObjectSignatureClassName}) object;
+	}

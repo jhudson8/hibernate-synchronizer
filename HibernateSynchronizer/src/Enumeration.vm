@@ -1,0 +1,34 @@
+#if ($field.PackageName && $field.PackageName.length() > 0)
+package ${field.PackageName};
+#end
+
+import java.io.Serializable;
+import net.sf.hibernate.PersistentEnum;
+
+public class ${field.ClassName} implements Serializable, PersistentEnum {
+
+	// example value
+	public static final ${field.ClassName} VALUE = new ${field.ClassName}(0);
+
+	private final int code;
+
+	protected ${field.ClassName}(int code) {
+		this.code = code;
+	}
+
+	public int toInt() { return code; }
+
+	public static ${field.ClassName} fromInt(int code) {
+		switch (code) {
+			case 0: return VALUE;
+			default: throw new RuntimeException("Unknown value: " + code);
+		}
+	}
+
+	public String toString () {
+		switch (code) {
+			case 0: return "Value";
+			default: return "Unknown value";
+		}
+	}
+}

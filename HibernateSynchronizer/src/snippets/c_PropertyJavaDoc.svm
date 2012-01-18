@@ -1,0 +1,7 @@
+#set ($desc = "")
+#set ($desc = $prop.getJavaDoc("FieldDescription", "	 "))
+#if ($desc && $desc != "")
+	/*
+$desc
+	 */
+#end

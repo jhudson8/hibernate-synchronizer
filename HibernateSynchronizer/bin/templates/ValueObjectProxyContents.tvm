@@ -1,0 +1,144 @@
+:Description=
+:ResourceType=C
+-
+#if ($class.Id)
+#if ($class.Id.hasExternalClass())
+
+	/**
+	 * Return the unique identifier of this class
+     * @hibernate.id
+#if ($class.Id.Generator)
+     *  generator-class="${class.Id.Generator.GeneratorClass}"
+#end
+#if (!$class.Id.isComposite())
+     *  column="$!{class.Id.Property.Column}"
+#end
+     */
+	public ${class.Id.Property.FullClassName} ${class.Id.Property.GetterName} ();
+
+	/**
+	 * Set the unique identifier of this class
+	 * @param ${class.Id.Property.JavaName} the new ID
+	 */
+	public void ${class.Id.Property.SetterName} (${class.Id.Property.FullClassName} ${class.Id.Property.JavaName});
+#else
+#foreach ($prop in $class.Id.Properties)
+
+	/**
+     * @hibernate.property
+     *  column=${prop.Column}
+	 * not-null=true
+	 */
+	public ${prop.SignatureFullClassName} ${prop.GetterName} ();
+
+	/**
+	 * Set the value related to the column: ${prop.Column}
+	 * @param ${prop.JavaName} the ${prop.Column} value
+	 */
+	public void ${prop.SetterName} (${prop.SignatureFullClassName} ${prop.JavaName});
+#end
+#end
+#end
+#if ($class.ComponentParent)
+	
+	public ${class.Parent.FullClassName} ${class.ComponentParent.GetterName} ();
+
+	public void ${class.ComponentParent.SetterName} (${class.Parent.FullClassName} ${class.ComponentParent.JavaName});
+#end
+#if ($class.Version)
+	
+	/**
+	 * Getter for the version attribute
+     * @hibernate.property
+     *  column=${class.Version.Column}
+	 */
+	public ${class.Version.FullClassName} ${class.Version.GetterName} ();
+
+	/**
+	 * Set the value related to the column: ${class.Version.Column}
+	 * @param ${class.Version.JavaName} the ${class.Version.Column} value
+	 */
+	public void ${class.Version.SetterName} (${class.Version.FullClassName} ${class.Version.JavaName});
+#end
+#if ($class.Timestamp)
+	
+	/**
+	 * Getter for the timestamp attribute
+     * @hibernate.property
+     *  column=${class.Timestamp.Column}
+	 */
+	public ${class.Timestamp.FullClassName} ${class.Timestamp.GetterName} ();
+
+	/**
+	 * Set the value related to the column: ${class.Timestamp.Column}
+	 * @param ${class.Timestamp.JavaName} the ${class.Timestamp.Column} value
+	 */
+	public void ${class.Timestamp.SetterName} (${class.Timestamp.FullClassName} ${class.Timestamp.JavaName});
+#end
+#foreach ($prop in $class.Properties)
+
+	/**
+     * @hibernate.property
+     *  column=${prop.Column}
+#if ($prop.isNotNull())
+	 * not-null=true
+#end
+	 */
+	public ${prop.FullClassName} ${prop.GetterName} ();
+
+	/**
+	 * Set the value related to the column: ${prop.Column}
+	 * @param ${prop.JavaName} the ${prop.Column} value
+	 */
+	public void ${prop.SetterName} (${prop.FullClassName} ${prop.JavaName});
+#end
+#foreach ($component in $class.ComponentList)
+
+	public ${component.FullClassName} ${component.GetterName} ();
+
+	public void ${component.SetterName} (${component.FullClassName} ${component.JavaName});
+#end
+#foreach ($prop in $class.OneToOneList)
+
+	/**
+     * @hibernate.property
+     *  column=${prop.Column}
+#if ($prop.isNotNull())
+	 * not-null=true
+#end
+	 */
+	public ${prop.FullClassName} ${prop.GetterName} ();
+
+	/**
+	 * Set the value related to the column: ${prop.Column}
+	 * @param ${prop.JavaName} the ${prop.Column} value
+	 */
+	public void ${prop.SetterName} (${prop.FullClassName} ${prop.JavaName});
+#end
+#foreach ($prop in $class.ManyToOneList)
+
+	/**
+     * @hibernate.property
+     *  column=${prop.Column}
+#if ($prop.isNotNull())
+	 * not-null=true
+#end
+	 */
+	public ${prop.SignatureFullClassName} ${prop.GetterName} ();
+
+	/**
+	 * Set the value related to the column: ${prop.Column}
+	 * @param ${prop.JavaName} the ${prop.Column} value
+	 */
+	public void ${prop.SetterName} (${prop.SignatureFullClassName} ${prop.JavaName});
+#end
+#foreach ($prop in $class.CollectionList)
+
+	public ${prop.FullClassName} ${prop.GetterName} ();
+
+	public void ${prop.SetterName} (${prop.FullClassName} ${prop.JavaName});
+#if ($prop.isSet() || $prop.isList() || $prop.isBag())
+	
+	public void addTo${prop.PropName} (Object obj);
+#end
+#end

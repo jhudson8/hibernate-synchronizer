@@ -1,0 +1,215 @@
+	protected static Map sessionFactoryMap;
+	protected static SessionFactory sessionFactory;
+	protected static ThreadLocal mappedSessions;
+	protected static ThreadLocal sessions;
+
+	/**
+	 * Configure the session factory by reading hibernate config file
+	 */
+	public static void initialize () throws HibernateException {
+		$!{class.AbsoluteRootDAOClassName}.initialize(
+			(String) null);
+	}
+	
+	/**
+	 * Configure the session factory by reading hibernate config file
+	 * @param configFileName the name of the configuration file
+	 */
+	public static void initialize (String configFileName) throws HibernateException {
+		$!{class.AbsoluteRootDAOClassName}.initialize(
+			configFileName,
+			$!{class.AbsoluteRootDAOClassName}.getNewConfiguration(
+				null));
+	}
+
+	public static void initialize (String configFileName, Configuration configuration) throws HibernateException {
+		if (null == configFileName && null != sessionFactory) return;
+		else if (null != sessionFactoryMap && null != sessionFactoryMap.get(configFileName)) return;
+		else {
+			if (null == configFileName) {
+				configuration.configure();
+				$!{class.AbsoluteRootDAOClassName}.setSessionFactory(
+					configuration.buildSessionFactory());
+			}
+			else {
+				configuration.configure(
+					configFileName);
+				$!{class.AbsoluteRootDAOClassName}.setSessionFactory(
+					configFileName,
+					configuration.buildSessionFactory());
+			}
+		}
+	}
+
+	/**
+	 * Set the session factory
+	 */
+	protected static void setSessionFactory (SessionFactory sessionFactory) {
+		setSessionFactory(
+			(String) null,
+			sessionFactory);
+	}
+
+	/**
+	 * Set the session factory
+	 */
+	protected static void setSessionFactory (String configFileName, SessionFactory sf) {
+		if (null == configFileName) {
+			sessionFactory = sf;
+		}
+		else {
+			if (null == sessionFactoryMap) sessionFactoryMap = new HashMap();
+			sessionFactoryMap.put(
+				configFileName,
+				sessionFactory);
+		}
+	}
+
+	/**
+	 * Return the SessionFactory that is to be used by these DAOs.  Change this
+	 * and implement your own strategy if you, for example, want to pull the SessionFactory
+	 * from the JNDI tree.
+	 */
+	protected SessionFactory getSessionFactory() {
+		return getSessionFactory(
+		getConfigurationFileName());
+	}
+
+	protected SessionFactory getSessionFactory(String configFile) {
+		if (null == configFile) {
+			if (null == sessionFactory)
+				throw new RuntimeException("The session factory has not been initialized (or an error occured during initialization)");
+			else
+				return sessionFactory;
+		}
+		else {
+			if (null == sessionFactoryMap)
+				throw new RuntimeException("The session factory for '" + configFile + "' has not been initialized (or an error occured during initialization)");
+			else {
+				SessionFactory sf = (SessionFactory) sessionFactoryMap.get(configFile);
+				if (null == sf)
+					throw new RuntimeException("The session factory for '" + configFile + "' has not been initialized (or an error occured during initialization)");
+				else
+					return sf;
+			}
+		}
+	}
+
+	/**
+	 * Return a new Session object that must be closed when the work has been completed.
+	 * @return the active Session
+	 */
+	public Session getSession() throws HibernateException {
+		return getSession(
+			getConfigurationFileName(),
+			false);
+	}
+
+	/**
+	 * Return a new Session object that must be closed when the work has been completed.
+	 * @return the active Session
+	 */
+	public Session createNewSession() throws HibernateException {
+		return getSession(
+			getConfigurationFileName(),
+			true);
+	}
+
+	/**
+	 * Return a new Session object that must be closed when the work has been completed.
+	 * @param configFile the config file must match the meta attribute "config-file" in the hibernate mapping file
+	 * @return the active Session
+	 */
+	private Session getSession(String configFile, boolean createNew) throws HibernateException {
+		if (createNew) {
+			return getSessionFactory(configFile).openSession();
+		}
+		else {
+			if (null == configFile) {
+				if (null == sessions) sessions = new ThreadLocal();
+				Session session = (Session) sessions.get();
+				if (null == session || !session.isOpen()) {
+					session = getSessionFactory(null).openSession();
+					sessions.set(session);
+				}
+				return session;
+			}
+			else {
+				if (null == mappedSessions) mappedSessions = new ThreadLocal();
+				java.util.HashMap map = (java.util.HashMap) mappedSessions.get();
+				if (null == map) {
+					map = new HashMap(1);
+					mappedSessions.set(map);
+				}
+				Session session = (Session) map.get(configFile);
+				if (null == session || !session.isOpen()) {
+					session = getSessionFactory(configFile).openSession();
+					map.put(configFile, session);
+				}
+				return session;
+			}
+		}
+	}
+
+	/**
+	 * Close all sessions for the current thread
+	 */
+	public static void closeCurrentThreadSessions () throws HibernateException {
+		if (null != sessions) {
+			Session session = (Session) sessions.get();
+			if (null != session && session.isOpen()) {
+				session.close();
+			}
+		}
+		if (null != mappedSessions) {
+			java.util.HashMap map = (java.util.HashMap) mappedSessions.get();
+			if (null != map) {
+				HibernateException thrownException = null;
+				Session session = null;
+				for (Iterator i=map.values().iterator(); i.hasNext(); ) {
+					session = (Session) i.next();
+					try {
+						if (null != session && session.isOpen()) {
+							session.close();
+						}
+					}
+					catch (HibernateException e) {
+						thrownException = e;
+					}
+				}
+				map.clear();
+				if (null != thrownException) throw thrownException;
+			}
+		}
+	}
+
+	/**
+	 * Close the session
+	 */
+	public void closeSession (Session session) throws HibernateException {
+		if (null != session) session.close();
+	}
+
+	/**
+	 * Begin the transaction related to the session
+	 */
+	public Transaction beginTransaction(Session s) throws HibernateException {
+		return s.beginTransaction();
+	}
+
+	/**
+	 * Commit the given transaction
+	 */
+	public void commitTransaction(Transaction t) throws HibernateException {
+		t.commit();
+	}
+
+	/**
+	 * Return a new Configuration to use.  This is not a mistake and is meant
+	 * to be overridden in the RootDAO if you want to do something different.
+	 * The file name is passed in so you have that to access.  The config file
+	 * is read in the initialize method.
+	 */
+	 public static Configuration getNewConfiguration (String configFileName) {
+	 	return new Configuration();
+	 }

@@ -1,0 +1,8 @@
+!SESSION Aug 13, 2004 16:53:20.580 ---------------------------------------------
+eclipse.buildId=unknown
+java.version=1.4.2_03
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+
+!ENTRY org.eclipse.core.filebuffers 4 0 Aug 13, 2004 16:53:20.580
+!MESSAGE The content type with id "com.objfac.xmlbuddy.xmlfile" specified in the extension point does not exist.

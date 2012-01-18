@@ -1,0 +1,72 @@
+	public ${class.ClassName} () {
+		super();
+	}
+#set ($root = $class.ParentRoot)
+#if ($root.Id)
+
+	/**
+	 * Constructor for primary key
+	 */
+#if ($root.Id.hasExternalClass())
+	public ${class.ClassName} (${root.Id.Property.FullClassName} ${root.Id.Property.JavaName}) {
+		super(${root.Id.Property.JavaName});
+	}
+#else
+	public ${class.ClassName} (
+#set ($countT = 1)
+#foreach ($prop in $root.Id.Properties)
+		${prop.SignatureFullClassName} ${prop.JavaName}#if ($countT < $root.Id.Properties.size()),
+#end
+#set ($countT = $countT + 1)
+#end) {
+
+		super (
+#set ($countT = 1)
+#foreach ($prop in $root.Id.Properties)
+			${prop.JavaName}#if ($countT < $root.Id.Properties.size()),
+#end
+#set ($countT = $countT + 1)
+#end);
+	}
+#end
+#end
+#if ($root.RequiredFields.size() > 0)
+
+	/**
+	 * Constructor for required fields
+	 */
+	public ${class.ClassName} (
+#if ($root.Id)
+#if ($root.Id.hasExternalClass())
+		${root.Id.Property.FullClassName} ${root.Id.Property.JavaName},
+#else
+#foreach ($prop in $root.Id.Properties)
+		${prop.SignatureFullClassName} ${prop.JavaName},
+#end
+#end
+#end
+#set ($countT = 1)
+#foreach ($prop in $root.RequiredFields)
+		$prop.SignatureFullClassName $prop.JavaName#if ($countT < $root.RequiredFields.size()),
+#end
+#set ($countT = $countT + 1)
+#end) {
+
+		super (
+#if ($root.Id)
+#if ($root.Id.hasExternalClass())
+			${root.Id.Property.JavaName},
+#else
+#foreach ($prop in $root.Id.Properties)
+			${prop.JavaName},
+#end
+#end
+#end
+#set ($countT = 1)
+#foreach ($prop in $root.RequiredFields)
+			${prop.JavaName}#if ($countT < $root.RequiredFields.size()),
+#end
+#set ($countT = $countT + 1)
+#end);
+	}
+#end

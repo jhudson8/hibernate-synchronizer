@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration
+    PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-2.0.dtd">
+
+<hibernate-configuration>
+    <session-factory #if ($sessionFactoryName && $sessionFactoryName.length() > 0)name="${sessionFactoryName}" #end>
+
+#if ($datasourceName && $datasourceName.length() > 0)
+		<!-- datasource connection properties -->
+		<property name="connection.datasource">$!{datasourceName}</property>
+#if ($datasourceJNDIUrl && $datasourceJNDIUrl.length() > 0)
+		<property name="hibernate.jndi.url">${datasourceJNDIUrl}</property>
+#end
+#if ($datasourceJNDIClassName && $datasourceJNDIClassName.length() > 0)
+		<property name="hibernate.jndi.class">${datasourceJNDIClassName}</property>
+#end
+#if ($datasourceUsername && $datasourceUsername.length() > 0)
+		<property name="hibernate.connection.username">${datasourceUsername}</property>
+#end
+#if ($datasourcePassword && $datasourcePassword.length() > 0)
+		<property name="hibernate.connection.password">${datasourcePassword}</property>
+#end
+#else
+		<!-- local connection properties -->
+		<property name="hibernate.connection.url">$!{databaseURL}</property>
+		<property name="hibernate.connection.driver_class">$!{driverClass}</property>
+		<property name="hibernate.connection.username">$!{localUsername}</property>
+		<property name="hibernate.connection.password">$!{localPassword}</property>
+		<!-- property name="hibernate.connection.pool_size"></property -->
+#end
+
+		<!-- dialect for ${databaseName} -->
+        <property name="dialect">$!{databaseResolver.resolve($databaseName)}</property>
+
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.use_outer_join">true</property>
+        <property name="hibernate.transaction.factory_class">$!{transactionFactoryResolver.resolve($appServerName)}</property>
+        <property name="jta.UserTransaction">java:comp/UserTransaction</property>
+
+    </session-factory>
+</hibernate-configuration>

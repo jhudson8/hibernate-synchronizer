@@ -1,0 +1,50 @@
+package ${package};
+
+import java.io.Serializable;
+import net.sf.hibernate.PersistentEnum;
+
+public class ${className} implements Serializable, PersistentEnum {
+
+#if ($values.size() > 0)
+#foreach($entry in $values.entrySet())
+	public static final ${className} ${util.getStaticName($entry.Value)} = new ${className}(${entry.Key});
+#end
+#else
+	// example value
+	public static final ${className} VALUE = new ${className}(0);
+#end
+
+	private final int code;
+
+	protected ${className}(int code) {
+		this.code = code;
+	}
+
+	public int toInt() { return code; }
+
+	public static ${className} fromInt(int code) {
+		switch (code) {
+#if ($values.size() > 0)
+#foreach($entry in $values.entrySet())
+			case ${entry.Key}: return ${util.getStaticName($entry.Value)};
+#end
+#else
+			case 0: return VALUE;
+#end
+			default: throw new RuntimeException("Unknown value: " + code);
+		}
+	}
+
+	public String toString () {
+		switch (code) {
+#if ($values.size() > 0)
+#foreach($entry in $values.entrySet())
+			case ${entry.Key}: return "${entry.Value}";
+#end
+#else
+			case 0: return "Value";
+#end
+			default: return "Unknown value";
+		}
+	}
+}

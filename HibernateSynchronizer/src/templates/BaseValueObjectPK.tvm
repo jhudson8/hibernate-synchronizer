@@ -1,0 +1,20 @@
+:Description=
+:ResourceType=C
+-
+package ${package};
+
+$snippet.BaseValueObjectPKImports
+
+$snippet.BaseValueObjectPKClassComments
+$snippet.BaseValueObjectPKClassDefinition
+
+$snippet.BaseValueObjectPKVariableDefinitions
+
+$snippet.BaseValueObjectPKConstructor
+
+$snippet.BaseValueObjectPKGetterSetter
+
+$snippet.BaseValueObjectPKEqualityMethods
+
+$snippet.BaseValueObjectPKCustomContents
+}

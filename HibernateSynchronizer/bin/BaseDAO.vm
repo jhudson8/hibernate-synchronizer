@@ -1,0 +1,43 @@
+package ${class.BaseDAOPackageName};
+
+$snippet.BaseDAOImport
+
+$snippet.BaseDAOComments
+public abstract class ${class.BaseDAOClassName} extends ${class.RootDAOFullClassName} {
+#if ($class.Queries.size() > 0)
+
+	// query name references
+#foreach ($query in $class.Queries)
+$snippet.StaticQuery
+#end
+#end
+
+	public static ${class.DAOClassName} instance;
+
+	/**
+	 * Return a singleton of the DAO
+	 */
+	public static ${class.DAOClassName} getInstance () {
+		if (null == instance) instance = new ${class.DAOClassName}();
+		return instance;
+	}
+
+	/**
+	 * ${class.RootDAOFullClassName} _RootDAO.getReferenceClass()
+	 */
+	public Class getReferenceClass () {
+		return ${class.FullClassName}.class;
+	}
+#if ($class.ConfigFile)
+
+	/**
+	 * Return the name of the configuration file to be used with this DAO
+	 */
+	public String getConfigurationFileName () {
+		return "${class.ConfigFile}";
+	}
+#end
+	
+$snippet.DAOMethods
+$!{snippet.BaseDAOCustomContents}
+}

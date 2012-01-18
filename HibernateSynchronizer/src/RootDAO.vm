@@ -1,0 +1,4 @@
+package ${class.DAOPackageName};
+
+public abstract class _RootDAO extends ${class.BaseRootDAOFullClassName} {
+}

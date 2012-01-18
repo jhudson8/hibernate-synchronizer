@@ -1,0 +1,226 @@
+#if (!$isSubClass)
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+
+<hibernate-mapping package="$!{packageName}">
+	<class
+		name="$!{table.HibernateClassName}"
+		table="$!{table.Name}"
+#if ($UseProxies)
+		proxy="$!{proxyClass}"
+#end
+	>
+#if ($table.MetaData)
+$table.MetaData
+#end
+#if ($table.hasCompositeKey())
+#if ($table.isCompositeKeyOnly())
+		<composite-id>
+#else
+		<composite-id name="$!{CompositeIdName}" class="$!{table.ClassName}PK">
+#end
+#foreach ($column in $table.PrimaryKeys)
+#if ($table.isForeignKey($column))
+#set ($rel = $table.getRelationship($column))
+#if ($table.useRelationship($rel))
+#set ($fCols = $table.getFKColumns($rel))
+#if ($fCols.size() == 1)
+			<key-many-to-one
+				name="$!{column.FKPropName}"
+				class="${table.getForeignKey($column).Table.HibernateClassName}"
+				column="$!{fCols.get(0).Name}"
+			/>
+#else
+			<key-many-to-one name="$!{column.FKPropName}" class="${table.getForeignKey($column).Table.HibernateClassName}">
+#foreach ($fColumn in $fCols)
+				<column name="$!{fColumn.Name}"/>
+#end
+			</key-many-to-one>
+#end
+#end
+#else
+#if (!$column.isTypeResolved())
+		<!-- please tell Joe Hudson that the type '$!{column.DataType}' could not be resolved.. defaulting to java.lang.String -->
+#end
+			<key-property
+				name="$!{column.PropName}"
+				column="$!{column.Name}"
+				type="$!{column.HibernateType}"
+			/>
+#end
+#end
+		</composite-id>
+#else
+#if ($table.PrimaryKeys.size() == 1)
+#foreach ($column in $table.PrimaryKeys)
+#if (!$column.isTypeResolved())
+		<!-- please tell Joe Hudson that the type '$!{column.DataType}' could not be resolved.. defaulting to java.lang.String -->
+#end
+		<id
+			name="$!{column.PropName}"
+			type="$!{column.HibernateType}"
+			column="$!{column.Name}"
+		>
+#if ($column.MetaData)
+$column.MetaData
+#end
+			<generator class="$!{Generator}"/>
+		</id>
+#end
+#end
+#end
+
+#end
+#foreach($column in $table.Columns)
+#if (!$table.isPrimaryKey($column) && !$table.isForeignKey($column))
+#if (!$column.isTypeResolved())
+		<!-- please tell Joe Hudson that the type '$!{column.DataType}' could not be resolved.. defaulting to java.lang.String -->
+#end
+		<property
+			name="$!{column.PropName}"
+			column="$!{column.Name}"
+			type="$!{column.HibernateType}"
+#if (!$column.isNull())
+			not-null="true"
+#else
+			not-null="false"
+#end
+#if ($column.Size > 0)
+			length="${column.Size}"
+#end
+#if ($column.MetaData)
+		>
+$column.MetaData
+		</property>
+#else
+		/>
+#end
+#end
+#end
+#foreach($rel in $table.ForeignKeys)
+#if ($table.isEnumeration($rel))
+		<property
+			name="$!{rel.ForeignKey.FKPropName}"
+			column="$!{rel.ForeignKey.Name}"
+			type="$!{packageName}.$!{rel.PrimaryKey.Table.HibernateClassName}"
+#if (!$column.isNull())
+			not-null="true"
+#else
+			not-null="false"
+#end
+		/>
+#else
+#if (!$table.isPrimaryKey($rel.ForeignKey) && $table.useRelationship($rel))
+
+#set ($fCols = $table.getFKColumns($rel))
+		<many-to-one
+			name="$!{rel.ForeignKey.FKPropName}"
+			class="$!{rel.PrimaryKey.Table.HibernateClassName}"
+#if (!$column.isNull())
+			not-null="true"
+#else
+			not-null="false"
+#end
+		>
+#if ($column.MetaData)
+$column.MetaData
+#end
+#foreach ($fColumn in $fCols)
+			<column name="$!{fColumn.Name}"/>
+#end
+		</many-to-one>
+#end
+#end
+#end
+#if (!$fileExists)
+#if ($CreateSets)
+#if ($table.OneToManyLists.size() > 0)
+	
+#foreach($fCol in $table.OneToManyLists)
+
+		<set name="$!{table.getOneToManyListName($fCol)}" inverse="true"#if ($UseLazyLoading) lazy="true"#end>
+			<key column="$!{fCol.Name}"/>
+			<one-to-many class="$!{fCol.Table.HibernateClassName}"/>
+		</set>
+#end
+#end
+#if ($table.ManyToManyLists.size() > 0)
+	
+#foreach($container in $table.ManyToManyLists)
+		<set
+			name="$!{table.getManyToManyListName($container)}"
+			table="$!{container.PCol.Table.Name}"
+			cascade="all"
+#if ($UseLazyLoading)
+			lazy="true"
+#end
+		>
+			<key column="$!{container.PCol.Name}" />
+			<many-to-many column="$!{container.FCol.Name}" class="$!{container.PTable.HibernateClassName}"/>
+		</set>
+#end
+#end
+#end
+#else
+#if ($oneToOnes)
+${oneToOnes}
+#end
+#if ($manyToManies)
+${manyToManies}
+#end
+#if ($components)
+${components}
+#end
+#if ($dynamicComponents)
+${dynamicComponents}
+#end
+#if ($maps)
+${maps}
+#end
+#if ($lists)
+${lists}
+#end
+#if ($sets)
+${sets}
+#end
+#if ($bags)
+${bags}
+#end
+#if ($arrays)
+${arrays}
+#end
+#if ($primitiveArrays)
+${primitiveArrays}
+#end
+#if ($subclasses)
+${subclasses}
+#end
+#end
+
+
+#foreach ($sc in $table.SubClasses)
+
+	<joined-subclass
+		name="$!{sc.HibernateClassName}"
+		table="$!{sc.Name}"
+#if ($UseProxies)
+		proxy="$!{proxyClass}"
+#end
+	>
+#foreach ($column in $sc.PrimaryKeys)
+		<key column="$!{column.Name}"/>
+#end
+		$sc.SubClassMapping
+	</joined-subclass>
+#end
+#if (!$isSubClass)
+	</class>
+#if ($fileExists)
+#if ($queries)
+${queries}
+#end
+#end
+</hibernate-mapping>
+#end

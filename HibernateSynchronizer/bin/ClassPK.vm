@@ -1,0 +1,10 @@
+package ${class.Id.Property.PackageName};
+
+import ${class.BasePackageName}.Base${class.Id.Property.ClassName};
+
+public class ${class.Id.Property.ClassName} extends Base${class.Id.Property.ClassName} {
+
+/*[CONSTRUCTOR MARKER BEGIN]*/
+$!{constructors}
+/*[CONSTRUCTOR MARKER END]*/
+}
